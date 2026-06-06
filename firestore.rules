@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /posts/{postId} {
+      allow read: if true;
+      allow create: if request.resource.data.senderName is string
+                    && request.resource.data.senderName.size() > 0
+                    && request.resource.data.photos is list
+                    && request.resource.data.photos.size() > 0
+                    && request.resource.data.photos.size() <= 10;
+      allow update: if true; // likes, comments count, recent comments preview
+
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create: if request.resource.data.author is string
+                      && request.resource.data.text is string
+                      && request.resource.data.text.size() <= 300;
+      }
+    }
+  }
+}

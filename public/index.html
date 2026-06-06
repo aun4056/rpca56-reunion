@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RPCA56 — Alumni Reunion 2026</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ── TOP HEADER ─────────────────────────────────────────────────────────── -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-area">
+      <img src="logo.png" alt="RPCA56 Logo" class="logo" onerror="this.style.display='none';document.getElementById('logo-text').style.display='flex'" />
+      <div id="logo-text" class="logo-text-fallback" style="display:none">
+        <span class="logo-badge">RPCA</span>
+        <span class="logo-year">56</span>
+      </div>
+      <div class="event-title">
+        <span class="title-main">Alumni Reunion 2026</span>
+        <span class="title-sub">Share your memories with us</span>
+      </div>
+    </div>
+    <div class="countdown-area">
+      <div class="countdown-label">Party starts in</div>
+      <div class="countdown-clock" id="countdown">
+        <div class="time-block"><span id="cd-days">00</span><small>Days</small></div>
+        <div class="time-sep">:</div>
+        <div class="time-block"><span id="cd-hours">00</span><small>Hrs</small></div>
+        <div class="time-sep">:</div>
+        <div class="time-block"><span id="cd-mins">00</span><small>Min</small></div>
+        <div class="time-sep">:</div>
+        <div class="time-block"><span id="cd-secs">00</span><small>Sec</small></div>
+      </div>
+      <div class="party-date">July 11, 2026 · 6:00 PM</div>
+    </div>
+  </div>
+</header>
+
+<!-- ── NAV TABS ───────────────────────────────────────────────────────────── -->
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="feed">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    Feed
+  </button>
+  <button class="tab-btn" data-tab="upload">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    Upload
+  </button>
+  <button class="tab-btn" data-tab="leaderboard">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 20 18 10"/><polyline points="12 20 12 4"/><polyline points="6 20 6 14"/></svg>
+    Leaderboard
+  </button>
+</nav>
+
+<!-- ── FEED TAB ───────────────────────────────────────────────────────────── -->
+<section id="tab-feed" class="tab-content active">
+  <div class="feed-container" id="feed-container">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Loading photos...</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── UPLOAD TAB ─────────────────────────────────────────────────────────── -->
+<section id="tab-upload" class="tab-content">
+  <div class="upload-card">
+    <h2 class="upload-title">Share Your Memories</h2>
+    <p class="upload-subtitle">Upload up to 10 photos at a time</p>
+
+    <form id="upload-form" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="sender-name">Your Name</label>
+        <input type="text" id="sender-name" name="senderName" placeholder="Enter your name" required maxlength="60" />
+      </div>
+
+      <div class="drop-zone" id="drop-zone">
+        <input type="file" id="photo-input" name="photos" accept="image/*" multiple />
+        <div class="drop-zone-content">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="upload-icon"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <p>Drag and drop photos here, or</p>
+          <button type="button" class="btn-choose" onclick="document.getElementById('photo-input').click()">Choose Photos</button>
+          <p class="drop-hint">JPG, PNG, HEIC · Up to 10 photos · 20 MB each</p>
+        </div>
+      </div>
+
+      <div class="preview-grid" id="preview-grid"></div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" id="submit-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+          Upload
+        </button>
+      </div>
+    </form>
+
+    <div class="upload-success" id="upload-success" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+      <h3>Uploaded Successfully!</h3>
+      <p>Your photos have been shared with everyone.</p>
+      <button class="btn-primary" onclick="switchTab('feed')">View Feed</button>
+      <button class="btn-secondary" onclick="resetUpload()">Upload More</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── LEADERBOARD TAB ────────────────────────────────────────────────────── -->
+<section id="tab-leaderboard" class="tab-content">
+  <div class="leaderboard-container">
+
+    <div class="lb-section">
+      <h2 class="lb-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Top 10 Photos
+      </h2>
+      <div id="top-photos" class="lb-grid"></div>
+    </div>
+
+    <div class="lb-section">
+      <h2 class="lb-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Top 10 Senders
+      </h2>
+      <div id="top-senders" class="lb-list"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── PHOTO LIGHTBOX ─────────────────────────────────────────────────────── -->
+<div class="lightbox" id="lightbox" style="display:none">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-prev" id="lb-prev" onclick="shiftLightbox(-1)">‹</button>
+  <img class="lightbox-img" id="lightbox-img" src="" alt="" />
+  <button class="lightbox-next" id="lb-next" onclick="shiftLightbox(1)">›</button>
+</div>
+<div class="lightbox-overlay" id="lightbox-overlay" onclick="closeLightbox()"></div>
+
+<!-- ── COMMENT MODAL ──────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="comment-overlay" onclick="closeCommentModal()"></div>
+<div class="comment-modal" id="comment-modal" style="display:none">
+  <div class="comment-modal-header">
+    <h3>Comments</h3>
+    <button onclick="closeCommentModal()">✕</button>
+  </div>
+  <div class="comment-list" id="comment-list"></div>
+  <form class="comment-form" id="comment-form" onsubmit="submitComment(event)">
+    <input type="hidden" id="comment-post-id" />
+    <input type="text" id="comment-author" placeholder="Your name" required maxlength="60" />
+    <input type="text" id="comment-text" placeholder="Write a comment..." required maxlength="300" />
+    <button type="submit" class="btn-icon-send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </form>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
