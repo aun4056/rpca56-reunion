@@ -18,20 +18,29 @@ BASE_DIR   = Path(__file__).parent
 PUBLIC_DIR = BASE_DIR / "public"
 PORT       = int(os.environ.get("PORT", 3000))
 
+# Load .env if present (local dev only — Render uses env vars directly)
+_env_file = BASE_DIR / ".env"
+if _env_file.exists():
+    for _line in _env_file.read_text(encoding="utf-8").splitlines():
+        _line = _line.strip()
+        if _line and not _line.startswith("#") and "=" in _line:
+            _k, _, _v = _line.partition("=")
+            os.environ.setdefault(_k.strip(), _v.strip().strip('"'))
+
+# Configure Cloudinary at import time (works with gunicorn)
+cloudinary.config(
+    cloud_name = os.environ.get("CLOUDINARY_CLOUD_NAME"),
+    api_key    = os.environ.get("CLOUDINARY_API_KEY"),
+    api_secret = os.environ.get("CLOUDINARY_API_SECRET"),
+    secure     = True
+)
+
 MAX_PIXELS  = 1920
 JPEG_QUALITY = 82
 MAX_FILE_MB  = 50
 
 app = Flask(__name__, static_folder=str(PUBLIC_DIR))
 CORS(app)
-
-def configure_cloudinary():
-    cloudinary.config(
-        cloud_name = os.environ.get("CLOUDINARY_CLOUD_NAME"),
-        api_key    = os.environ.get("CLOUDINARY_API_KEY"),
-        api_secret = os.environ.get("CLOUDINARY_API_SECRET"),
-        secure     = True
-    )
 
 # ── Image helpers ─────────────────────────────────────────────────────────────
 
@@ -130,7 +139,6 @@ if __name__ == "__main__":
                 k, _, v = line.partition("=")
                 os.environ.setdefault(k.strip(), v.strip().strip('"'))
 
-    configure_cloudinary()
     print(f"\n  RPCA56 Upload Server running at http://localhost:{PORT}")
     cloud_ok = bool(os.environ.get("CLOUDINARY_CLOUD_NAME"))
     print(f"  Cloudinary: {'OK' if cloud_ok else 'NOT configured - check .env'}")
