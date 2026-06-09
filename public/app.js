@@ -2,7 +2,7 @@ import { firebaseConfig } from './firebase-config.js';
 import { initializeApp }                          from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getFirestore, collection, doc, addDoc,
          updateDoc, arrayUnion, arrayRemove,
-         onSnapshot, query, orderBy, getDocs,
+         onSnapshot, query, orderBy, getDocs, getDoc,
          serverTimestamp, increment }             from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 // ── Firebase init ─────────────────────────────────────────────────────────────
@@ -261,9 +261,10 @@ async function submitComment(e) {
   await addDoc(commentsRef, comment);
 
   // Store last 2 comments on the post doc for feed preview + increment count
-  const postDoc = doc(db, 'posts', postId);
+  const postDoc    = doc(db, 'posts', postId);
   const newPreview = { author, text };
-  const existing   = cachedPosts[postId]?.recentComments ?? [];
+  const freshSnap  = await getDoc(postDoc);
+  const existing   = freshSnap.data()?.recentComments ?? [];
   const updated    = [...existing, newPreview].slice(-2);
   await updateDoc(postDoc, { recentComments: updated, commentCount: increment(1) });
 
